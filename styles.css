@@ -718,7 +718,5 @@ h2 { margin-top: 10px; font-size: clamp(2rem, 2.4vw + 1rem, 3rem); letter-spacin
   .podiums li { flex-direction: column; gap: 2px; }
 }
 
-/* Education: key courses */
-.edu-card__label { margin-top: 16px; font-size: 13px; font-weight: 500; color: var(--muted); }
-.edu-card .chips { margin-top: 8px; }
-.edu-grid { align-items: start; }
+/* Education: one-line focus */
+.edu-card__focus { margin-top: 10px; font-size: 14px; color: var(--muted); }
