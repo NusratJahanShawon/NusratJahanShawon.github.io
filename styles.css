@@ -707,3 +707,10 @@ h2 { margin-top: 10px; font-size: clamp(2rem, 2.4vw + 1rem, 3rem); letter-spacin
   .masonry .shot { margin-bottom: 10px; }
 }
 @media (hover: none) { .shot::after { opacity: 1; transform: none; } }
+
+/* Beyond the code: language levels */
+.langs { display: grid; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; font-size: 14.5px; }
+.langs li { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.langs li:last-child { border-bottom: 0; padding-bottom: 0; }
+.langs span { color: var(--text); }
+.langs b { font-weight: 500; color: var(--muted); }
