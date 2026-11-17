@@ -18,9 +18,9 @@
   const links = $$('.menu a');
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver((es) => es.forEach((e) => {
-      if (e.isIntersecting) links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('href') === '#' + e.target.id));
+      if (e.isIntersecting) links.forEach((l) => { if (l.getAttribute('href').startsWith('#')) l.classList.toggle('is-active', l.getAttribute('href') === '#' + e.target.id); });
     }), { rootMargin: '-45% 0px -50% 0px' });
-    links.forEach((l) => { const s = $(l.getAttribute('href')); if (s) spy.observe(s); });
+    links.forEach((l) => { const h = l.getAttribute('href'); const s = h.startsWith('#') && $(h); if (s) spy.observe(s); });
   }
 
   /* ---------- Reveal ---------- */
@@ -116,7 +116,7 @@
 
   /* ---------- Automation filters ---------- */
   const fBtns = $$('[data-filter]');
-  const cards = $$('.flow-card');
+  const cards = $$('.flow-card, [data-filterable] [data-tags]');
   fBtns.forEach((b) => b.addEventListener('click', () => {
     const f = b.dataset.filter;
     fBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
@@ -176,8 +176,9 @@
 
   /* ---------- Photo lightbox ---------- */
   const lb = $('.lightbox');
-  const shots = $$('.shot[data-src]');
-  if (lb && shots.length) {
+  const allShots = $$('.shot[data-src]');
+  const shots = [];
+  if (lb && allShots.length) {
     const img = $('img', lb), cap = $('figcaption', lb);
     let cur = 0, opener = null;
     const show = (i) => {
@@ -186,12 +187,12 @@
       img.src = s.dataset.src; img.alt = $('img', s)?.alt || '';
       cap.textContent = s.dataset.caption || '';
     };
-    const open = (i) => { opener = document.activeElement; show(i); lb.hidden = false; document.body.style.overflow = 'hidden'; $('.lightbox__close', lb).focus(); };
+    const open = (el) => { shots.length = 0; shots.push(...allShots.filter((s) => !s.hidden && s.offsetParent !== null && !s.closest('[hidden]'))); const i = Math.max(0, shots.indexOf(el)); opener = document.activeElement; show(i); lb.hidden = false; document.body.style.overflow = 'hidden'; $('.lightbox__close', lb).focus(); };
     const close = () => { lb.hidden = true; document.body.style.overflow = ''; opener?.focus(); };
-    shots.forEach((s, i) => {
+    allShots.forEach((s) => {
       s.tabIndex = 0; s.setAttribute('role', 'button');
-      s.addEventListener('click', () => open(i));
-      s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
+      s.addEventListener('click', () => open(s));
+      s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(s); } });
     });
     $('.lightbox__close', lb).addEventListener('click', close);
     $('.lightbox__prev', lb).addEventListener('click', () => show(cur - 1));
